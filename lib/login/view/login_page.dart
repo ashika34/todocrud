@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todoapp/home/home.dart';
 import 'package:todoapp/signup/signup.dart';
@@ -13,7 +14,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   TextEditingController email = TextEditingController();
-   TextEditingController Password= TextEditingController();
+   TextEditingController password= TextEditingController();
+   final _formKey=GlobalKey<FormState>();
   
   @override
   Widget build(BuildContext context) {
@@ -30,12 +32,20 @@ class _LoginState extends State<Login> {
               
               Container(
                 padding: EdgeInsets.all(20),
-                child: Form(child: Column(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
                   children: [
                     Text('Login',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
                     ),
                     Container(
                       child: TextFormField(
+                        validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please fill this field";
+                          
+                        }
+                        },
                         controller:email ,
                         decoration: InputDecoration(
                           border: UnderlineInputBorder(
@@ -50,7 +60,13 @@ class _LoginState extends State<Login> {
                     ),
                     Container(
                       child: TextFormField(
-                        controller:Password ,
+                        validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please fill this field";
+                          
+                        }
+                        },
+                        controller:password ,
                         decoration: InputDecoration(
                           border: UnderlineInputBorder(
                             borderSide: BorderSide(width: 1,color: Colors.grey)
@@ -75,17 +91,29 @@ class _LoginState extends State<Login> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: 50,
-                      child: FloatingActionButton(onPressed: () {
-                         Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+                      child: TextButton(onPressed: () async{
+                        try {
+                          final _auth= FirebaseAuth.instance;
+                          final userRef=await _auth.signInWithEmailAndPassword(
+                            email: email.text,
+                          password: password.text,
+                           );
+                           Navigator.push(context, MaterialPageRoute(builder: (context) => Home(),));
+                          
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Invalid User name or passord')));
+
+                        }
+                         
                       },
+                      
                       child: Text('Login'),
-                     shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10)
+                    
 
                       ),
                       
                       ),
-                    ),
+                  
                     SizedBox(
                       height: 20,
                     ),
@@ -97,13 +125,11 @@ class _LoginState extends State<Login> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: 50,
-                      child: FloatingActionButton(onPressed: () {
+                      child: TextButton(onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp(),));
                       },
                       child: Text('Sign Up'),
-                     shape: new RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10)
-                     ))
+                    )
 
                     )
                    ],

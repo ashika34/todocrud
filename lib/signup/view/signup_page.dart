@@ -110,7 +110,7 @@ class SignUp extends StatelessWidget {
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: 50,
-                        child: FloatingActionButton(
+                        child: TextButton(
                           onPressed: ()async {
                             if(_formKey.currentState!.validate())
                             await SignupRepo().createUser(
@@ -122,10 +122,9 @@ class SignUp extends StatelessWidget {
                             Navigator.push(context, MaterialPageRoute(builder: (context) => Login(),));
                           },
                           child: Text('Register'),
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(10)),
+                          ),
                         ),
-                      ),
+                      
                     ],
                   )),
                 ),
